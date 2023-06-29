@@ -1,1 +1,1 @@
-from rest_framework import serializer
+from rest_framework import serializers
