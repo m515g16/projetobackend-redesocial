@@ -1,5 +1,12 @@
 from django.db import models
 
-class Curtida(models.Model):
-    curtido = models.BooleanField(null=True, default=False)
+class Like(models.Model):
+    user = models.ForeignKey(
+        "usuarios.User", on_delete=models.CASCADE, related_name="user_like"
+    ) 
+
+    publication = models.ForeignKey(
+        "publicacoes.Publication", on_delete=models.CASCADE, related_name="publication_like"
+    )  
+    ...
     
