@@ -1,7 +1,7 @@
 from rest_framework.views import APIView, Request, Response, status
-from .models import Usuario
+from .models import User
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import UsuarioSerializer
+from .serializers import UserSerializer
 from django.shortcuts import get_object_or_404
 from .permissions import IsAccountOwner
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
@@ -12,16 +12,16 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 class ListUsuario(ListAPIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAdminUser]
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 class CreateUsuario(CreateAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 class RetrieveUsuario(RetrieveAPIView):
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
     lookup_url_kwarg = "pk"
 
@@ -29,8 +29,8 @@ class UpdateUsuario(UpdateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAccountOwner]
 
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
     lookup_url_kwarg = "pk"
 
@@ -59,8 +59,8 @@ class DestroyUsuario(DestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAccountOwner]
 
-    queryset = Usuario.objects.all()
-    serializer_class = UsuarioSerializer
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
     lookup_url_kwarg = "pk"
 

@@ -55,7 +55,6 @@ MY_APPS = [
     "comentarios",
     "curtidas",
     "publicacoes",
-    "seguidores",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MY_APPS
@@ -162,7 +161,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-AUTH_USER_MODEL = "usuarios.Usuario"
+AUTH_USER_MODEL = "usuarios.User"
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Your Project API',
