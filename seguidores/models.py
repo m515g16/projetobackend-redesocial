@@ -1,3 +1,5 @@
 from django.db import models
 
-# Create your models here.
+class Seguidor(models.Model):
+    seguidor = models.BooleanField(null=True, default=False)
+    amigo = models.BooleanField(null=True, default=False)
