@@ -1,7 +1,8 @@
 from django.db import models
 
 class Publication(models.Model):
-    text = models.TextField()
+    image = models.CharField(max_length=180, null=True)
+    text = models.CharField(max_length=2500)
     created_at = models.DateTimeField(auto_now_add=True)
 
     user = models.ForeignKey(

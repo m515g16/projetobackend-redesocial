@@ -8,5 +8,5 @@ class Like(models.Model):
     publication = models.ForeignKey(
         "publicacoes.Publication", on_delete=models.CASCADE, related_name="publication_like"
     )  
-    ...
+    
     
