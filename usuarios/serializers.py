@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from .models import Usuario
+from .models import User
 
-class UsuarioSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
 
-    def create(self, validated_data: dict) -> Usuario:
-        return Usuario.objects.create_user(**validated_data)
+    def create(self, validated_data: dict) -> User:
+        return User.objects.create_user(**validated_data)
 
-    def update(self, instance: Usuario, validated_data: dict) -> Usuario:
+    def update(self, instance: User, validated_data: dict) -> User:
         for key, value in validated_data.items():
             if key == "password":
                 instance.set_password(value)
@@ -18,7 +18,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
         return instance
 
     class Meta:
-        model = Usuario
+        model = User
         fields = ["id", "username", "email", "password", "name", "birthdate", "created_at", "updated_at"]
         extra_kwargs = {
             'password': {'write_only': True}
