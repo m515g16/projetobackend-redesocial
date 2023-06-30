@@ -4,8 +4,16 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import UsuarioSerializer
 from django.shortcuts import get_object_or_404
 from .permissions import IsAccountOwner
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
+
+
+class ListUsuario(ListAPIView):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAdminUser]
+    queryset = Usuario.objects.all()
+    serializer_class = UsuarioSerializer
 
 class CreateUsuario(CreateAPIView):
     queryset = Usuario.objects.all()

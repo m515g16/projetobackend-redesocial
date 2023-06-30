@@ -1,3 +1,5 @@
 from django.db import models
 
-# Create your models here.
+class Curtida(models.Model):
+    curtido = models.BooleanField(null=True, default=False)
+    
