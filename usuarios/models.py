@@ -30,7 +30,7 @@ class Follower(models.Model):
     )
 
 class Friend(models.Model):
-    usuario = models.ForeignKey(
+    user = models.ForeignKey(
         "usuarios.User", on_delete=models.CASCADE, related_name="user"
     )
 
