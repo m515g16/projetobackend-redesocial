@@ -12,6 +12,8 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    
+    
     followers = models.ManyToManyField(
         "usuarios.User", through="usuarios.Follower", related_name="seguidores"
     )
