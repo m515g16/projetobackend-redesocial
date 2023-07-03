@@ -18,11 +18,13 @@ class User(AbstractUser):
         "usuarios.User", through="usuarios.Follower", related_name="seguidores"
     )
 
-    friends = models.ManyToManyField(
-        "usuarios.User", through="usuarios.Friend", related_name="amigos"
+    friend_solicitations = models.ManyToManyField(
+        "usuarios.User", through="usuarios.Friend", related_name="solicitacao_amizade"
     )
 
-
+    @property
+    def friends(self):
+        return User.objects.filter(friend__friend=self, friend__accepted=True)
 
 class Follower(models.Model):
     user = models.ForeignKey(
