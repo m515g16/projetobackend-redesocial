@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
+from .views import CommentView, CommentUpdateDestroyView
 
 urlpatterns = [
-    # path("albums/", views.ListCreateAlbums.as_view()),
+    path("", CommentView.as_view()),
+    path("<int:id>/", CommentUpdateDestroyView.as_view())
 ]
