@@ -2,11 +2,11 @@ from rest_framework.views import APIView, Request, Response, status
 from .models import User, Follower, Friend
 from .serializers import UserSerializer, FollowerSerializer, FriendSerializer
 from django.shortcuts import get_object_or_404
-from .permissions import IsAccountOwner
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
+from .permissions import IsAccountOwner, IsFollowOwner, IsFriendOwner
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView, DestroyAPIView, ListCreateAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from exceptions import FollowExistsError, FriendshipExistsError
+
 
 
 
@@ -50,6 +50,13 @@ class RetrieveUpdateDestroyUsuario(RetrieveUpdateDestroyAPIView):
 
         return Response(serializer.data)
     
+class ListFollowUsuario(ListAPIView):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAdminUser]
+
+    queryset = Follower.objects.all()
+    serializer_class = FollowerSerializer
+
 class FollowUsuario(CreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
@@ -76,7 +83,21 @@ class FollowUsuario(CreateAPIView):
                 
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
-            
+class DeleteFollowUsuario(DestroyAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsFollowOwner]
+
+    queryset = Follower.objects.all()
+    serializer_class = FollowerSerializer 
+
+    lookup_url_kwarg = "pk"         
+
+class ListFriendUsuario(ListAPIView):
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [IsAdminUser]
+
+    queryset = Friend.objects.all()
+    serializer_class = FriendSerializer
 
 class FriendUsuario(CreateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -97,11 +118,22 @@ class FriendUsuario(CreateAPIView):
         user = User.objects.get(pk=user_id)
         
         if Friend.objects.filter(user=user, friend=friend).exists():
-             return Response ({'error': 'Usuária já é amiga dessa pessoa'}, status.HTTP_400_BAD_REQUEST)   
+             return Response ({'error': 'Amizade já solicitada'}, status.HTTP_400_BAD_REQUEST)   
         
         serializer.save(friend=friend, user=user)
     
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+    
+
+
+class UpdateDeleteFriendUsuario(RetrieveUpdateDestroyAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsFriendOwner]
+
+    queryset = Friend.objects.all()
+    serializer_class = FriendSerializer 
+
+    lookup_url_kwarg = "pk"
     
 
 
