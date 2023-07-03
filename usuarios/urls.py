@@ -7,7 +7,7 @@ urlpatterns = [
     path("usuarios/create/", views.CreateUsuario.as_view()),
     path("usuarios/ret-upd-des/<int:pk>/", views.RetrieveUpdateDestroyUsuario.as_view()),
     path("usuarios/follow/", views.FollowUsuario.as_view()),
-    path("usuarios/friend-request/", views.RetrieveUpdateDestroyUsuario.as_view()),
+    path("usuarios/friend/", views.FriendUsuario.as_view()),
     path("usuarios/login/", jwt_views.TokenObtainPairView.as_view()),
     path("usuarios/refresh/", jwt_views.TokenRefreshView.as_view()),
 ]

@@ -1,11 +1,12 @@
 from rest_framework.views import APIView, Request, Response, status
 from .models import User, Follower, Friend
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from .serializers import UserSerializer, FollowerSerializer, FriendSerializer
 from django.shortcuts import get_object_or_404
 from .permissions import IsAccountOwner
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from exceptions import FollowExistsError, FriendshipExistsError
 
 
 
@@ -56,15 +57,52 @@ class FollowUsuario(CreateAPIView):
     queryset = Follower.objects.all()
     serializer_class = FollowerSerializer
 
-    def perform_create(self, serializer):
-        print(self.request.user)
+    def post(self, req:Request) -> Response:
+            serializer = FollowerSerializer(data=req.data)
+
+            serializer.is_valid(raise_exception=True)
+
+            follower = self.request.user
         
-        follower = self.request.user
-        print("follower:", follower )
+            user_id = self.request.data.get("user_id")
+            
+            user = User.objects.get(pk=user_id)
+
+            if Follower.objects.filter(user=user, follower=follower).exists():
+                print("caiu")
+                return Response({'error': 'Usuária já segue essa pessoa'}, status.HTTP_400_BAD_REQUEST)
+            
+            serializer.save(follower=follower, user=user)
+                
+            return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+
+            
+
+class FriendUsuario(CreateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    queryset = Friend.objects.all()
+    serializer_class = FriendSerializer
+
+    def post(self, req:Request) -> Response:
+        serializer = FriendSerializer(data=req.data)
+
+        serializer.is_valid(raise_exception=True)
+
+        friend = self.request.user
         
         user_id = self.request.data.get("user_id")
         
-        user = Follower.objects.get(pk=user_id)
-        print("user:", user )
+        user = User.objects.get(pk=user_id)
+        
+        if Friend.objects.filter(user=user, friend=friend).exists():
+             return Response ({'error': 'Usuária já é amiga dessa pessoa'}, status.HTTP_400_BAD_REQUEST)   
+        
+        serializer.save(friend=friend, user=user)
+    
+        return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+    
 
-        serializer.save(follower=follower, user=user)
+
+        
