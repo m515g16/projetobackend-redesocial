@@ -2,6 +2,8 @@ from rest_framework import serializers
 from .models import User, Follower, Friend
 
 
+
+
 class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: dict) -> User:
@@ -27,17 +29,21 @@ class UserSerializer(serializers.ModelSerializer):
 
 class FollowerSerializer(serializers.ModelSerializer):
     # follower_id = serializers.IntegerField(read_only=True)
-    # user_id = serializers.IntegerField()
+    user_id = serializers.IntegerField()
+    follower = UserSerializer(read_only=True)
+    user = UserSerializer(read_only=True)
 
     # def create(self, validated_data: dict) -> User:
     #     return User.objects.create(**validated_data)
 
     class Meta:
         model = Follower
-        fields = ["id", "follower", "user"]
-        extra_kwargs = {
-            'follower': {'read_only': True}
-        }
+        fields = ["id", "follower", "user_id", "user"]
+        # extra_kwargs = {
+        #     'follower': {'read_only': True},
+        #     'user': {'read_only': True}
+        # }
+        read_only_fields = ["follower", "user"]
     
 class FriendSerializer(serializers.ModelSerializer):
     ...

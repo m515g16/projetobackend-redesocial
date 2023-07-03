@@ -57,9 +57,14 @@ class FollowUsuario(CreateAPIView):
     serializer_class = FollowerSerializer
 
     def perform_create(self, serializer):
+        print(self.request.user)
+        
         follower = self.request.user
-        user_id = self.request.data.get("user")
-
-        user = User.objects.get(pk=user_id)
+        print("follower:", follower )
+        
+        user_id = self.request.data.get("user_id")
+        
+        user = Follower.objects.get(pk=user_id)
+        print("user:", user )
 
         serializer.save(follower=follower, user=user)
