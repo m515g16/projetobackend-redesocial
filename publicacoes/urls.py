@@ -1,6 +1,8 @@
 from django.urls import path
-from . import views
+from .views import PublicationView, PublicationRetrieveView, PublicationUserView
 
 urlpatterns = [
-    # path("albums/", views.ListCreateAlbums.as_view()),
+    path("", PublicationView.as_view()),
+    path("<int:pk>/", PublicationRetrieveView.as_view()),
+    path("user/<int:user_id>/", PublicationUserView.as_view())
 ]
