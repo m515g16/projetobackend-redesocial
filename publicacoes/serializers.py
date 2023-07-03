@@ -8,10 +8,4 @@ class PublicationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Publication
-        fields = ("id", "image", "text", "user", "public")
-
-
-class PublicationUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Publication
-        fields = ("id", "image", "text", "public")
+        fields = ("id", "image", "text", "user", "public", "created_at")

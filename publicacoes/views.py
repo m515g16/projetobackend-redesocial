@@ -2,7 +2,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
 from .models import Publication
-from .serializers import PublicationSerializer, PublicationUserSerializer
+from .serializers import PublicationSerializer
 from .permission import PublicationPermission, PublicationUserPermission
 from .pagination import PublicationUserPagination
 
@@ -31,7 +31,7 @@ class PublicationRetrieveView(RetrieveUpdateDestroyAPIView):
 class PublicationUserView(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [PublicationUserPermission]
-    serializer_class = PublicationUserSerializer
+    serializer_class = PublicationSerializer
     pagination_class = PublicationUserPagination
 
     def get(self, request, *args, **kwargs):
