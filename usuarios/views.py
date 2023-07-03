@@ -1,10 +1,10 @@
 from rest_framework.views import APIView, Request, Response, status
-from .models import User
+from .models import User, Follower, Friend
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .serializers import UserSerializer
+from .serializers import UserSerializer, FollowerSerializer, FriendSerializer
 from django.shortcuts import get_object_or_404
 from .permissions import IsAccountOwner
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView, UpdateAPIView, DestroyAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 
@@ -19,13 +19,7 @@ class CreateUsuario(CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-class RetrieveUsuario(RetrieveAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-
-    lookup_url_kwarg = "pk"
-
-class UpdateUsuario(UpdateAPIView):
+class RetrieveUpdateDestroyUsuario(RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAccountOwner]
 
@@ -54,13 +48,23 @@ class UpdateUsuario(UpdateAPIView):
             instance._prefetched_objects_cache = {}
 
         return Response(serializer.data)
-
-class DestroyUsuario(DestroyAPIView):
+    
+class FollowUsuario(CreateAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAccountOwner]
+    permission_classes = [IsAuthenticated]
 
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+    queryset = Follower.objects.all()
+    serializer_class = FollowerSerializer
 
-    lookup_url_kwarg = "pk"
+    def perform_create(self, serializer):
+        print(self.request.user)
+        
+        follower = self.request.user
+        print("follower:", follower )
+        
+        user_id = self.request.data.get("user_id")
+        
+        user = Follower.objects.get(pk=user_id)
+        print("user:", user )
 
+        serializer.save(follower=follower, user=user)

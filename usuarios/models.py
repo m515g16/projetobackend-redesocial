@@ -20,17 +20,19 @@ class User(AbstractUser):
         "usuarios.User", through="usuarios.Friend", related_name="amigos"
     )
 
+
+
 class Follower(models.Model):
-    usuario = models.ForeignKey(
+    user = models.ForeignKey(
         "usuarios.User", on_delete=models.CASCADE, related_name="followed_user"
     )
 
-    seguidor = models.ForeignKey(
+    follower = models.ForeignKey(
         "usuarios.User", on_delete=models.CASCADE, related_name="follower_user"
     )
 
 class Friend(models.Model):
-    usuario = models.ForeignKey(
+    user = models.ForeignKey(
         "usuarios.User", on_delete=models.CASCADE, related_name="user"
     )
 
