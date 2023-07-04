@@ -1,12 +1,17 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from usuarios.models import Follower, Friend
 from publicacoes.models import Publication
+from .serializers import CommentSerializer
 
 
 class CommentPermission(BasePermission):
     def has_permission(self, request, view):
         user_id = request.user.id
-        publication = request.data.get("publication_id")
+        serializer = CommentSerializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+
+        publication = serializer.validated_data.get("publication_id")
         publication = Publication.objects.filter(pk=publication).first()
 
         if publication.public:
