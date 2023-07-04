@@ -2,8 +2,8 @@ from rest_framework.views import APIView, Request, Response, status
 from .models import User, Follower, Friend
 from .serializers import UserSerializer, FollowerSerializer, FriendSerializer
 from django.shortcuts import get_object_or_404
-from .permissions import IsAccountOwner, IsFollowOwner, IsFriendOwner
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView, DestroyAPIView, ListCreateAPIView
+from .permissions import IsAccountOwner, IsFollowOwner, IsFriendOwner, FriendAnswer
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView, DestroyAPIView, ListCreateAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework_simplejwt.authentication import JWTAuthentication
 

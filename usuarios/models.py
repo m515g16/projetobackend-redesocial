@@ -1,6 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
+class FriendSituation(models.TextChoices):
+    pendding = "Pendente"
+    accepted = "Aceito"
+    denied = "Negado"
+
 class User(AbstractUser):
     class Meta:
         ordering = ["name"]
@@ -22,9 +27,13 @@ class User(AbstractUser):
         "usuarios.User", through="usuarios.Friend", related_name="solicitacao_amizade"
     )
 
+    # @property
+    # def friends(self):
+    #     return User.objects.filter(friend__friend=self, friend__accepted=True)
+    
     @property
     def friends(self):
-        return User.objects.filter(friend__friend=self, friend__accepted=True)
+        return User.objects.filter(friend__friend=self, friend__situation="Aceito")
 
 class Follower(models.Model):
     user = models.ForeignKey(
@@ -44,6 +53,8 @@ class Friend(models.Model):
         "usuarios.User", on_delete=models.CASCADE, related_name="friend"
     )
 
-    pendding = models.BooleanField(default=True)
-    accepted = models.BooleanField(default=False)
-    solicited = models.BooleanField(default=True) 
+    # pendding = models.BooleanField(default=True)
+    # accepted = models.BooleanField(default=False)
+    # solicited = models.BooleanField(default=True) 
+
+    situation = models.CharField(max_length=20, choices=FriendSituation.choices, default=FriendSituation.pendding)

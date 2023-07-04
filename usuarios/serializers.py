@@ -48,10 +48,10 @@ class FriendSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Friend
-        fields = ["id", "friend", "user_id", "user",
-                  "pendding", "accepted", "solicited"]
-        read_only_fields = ["friend", "user",
-                            "pendding", "accepted", "solicited"]
+        # fields = ["id", "friend", "user_id", "user", "pendding", "accepted", "solicited"]
+        # read_only_fields = ["friend", "user", "pendding", "accepted", "solicited"]
+        fields = ["id", "friend", "user_id", "situation"]
+        read_only_fields = ["friend", "user", "situation"]
         extra_kwargs = {
             'user_id': {'write_only': True}
         }
