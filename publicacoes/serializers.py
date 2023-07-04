@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from usuarios.serializers import UserSerializer
+from usuarios.serializers import UserPublicSerializer
 from .models import Publication
 
 
 class PublicationSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
+    user = UserPublicSerializer(read_only=True)
 
     class Meta:
         model = Publication

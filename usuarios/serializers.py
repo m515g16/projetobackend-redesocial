@@ -2,8 +2,6 @@ from rest_framework import serializers
 from .models import User, Follower, Friend
 
 
-
-
 class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data: dict) -> User:
@@ -22,10 +20,12 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ["id", "perfil", "name", "username", "email", "password", "birthdate", "created_at", "updated_at", "followers", "friend_solicitations", "friends"]
+        fields = ["id", "perfil", "name", "username", "email", "password", "birthdate",
+                  "created_at", "updated_at", "followers", "friend_solicitations", "friends"]
         extra_kwargs = {
             'password': {'write_only': True}
         }
+
 
 class FollowerSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(write_only=True)
@@ -39,7 +39,8 @@ class FollowerSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'user_id': {'write_only': True}
         }
-    
+
+
 class FriendSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(write_only=True)
     friend = UserSerializer(read_only=True)
@@ -47,8 +48,16 @@ class FriendSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Friend
-        fields = ["id", "friend", "user_id", "user", "pendding", "accepted", "solicited"]
-        read_only_fields = ["friend", "user", "pendding", "accepted", "solicited"]
+        fields = ["id", "friend", "user_id", "user",
+                  "pendding", "accepted", "solicited"]
+        read_only_fields = ["friend", "user",
+                            "pendding", "accepted", "solicited"]
         extra_kwargs = {
             'user_id': {'write_only': True}
         }
+
+
+class UserPublicSerializer(UserSerializer):
+    class Meta:
+        model = User
+        fields = ("id", "perfil", "name", "username")

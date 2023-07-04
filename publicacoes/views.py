@@ -12,7 +12,7 @@ class PublicationView(ListCreateAPIView):
     permission_classes = [PublicationPermission]
     queryset = Publication.objects.filter(public=True)
     serializer_class = PublicationSerializer
-    page_size = 10
+    pagination_class = PublicationUserPagination
 
     def perform_create(self, serializer):
         user = self.request.user
