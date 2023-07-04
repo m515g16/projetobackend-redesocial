@@ -1,9 +1,9 @@
 from rest_framework.views import APIView, Request, Response, status
 from .models import User, Follower, Friend
-from .serializers import UserSerializer, FollowerSerializer, FriendSerializer
+from .serializers import UserSerializer, FollowerSerializer, FriendSerializer, FriendAnswerSerializer
 from django.shortcuts import get_object_or_404
 from .permissions import IsAccountOwner, IsFollowOwner, IsFriendOwner, FriendAnswer
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView, DestroyAPIView, ListCreateAPIView, UpdateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView,RetrieveDestroyAPIView,RetrieveUpdateAPIView, DestroyAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -13,6 +13,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 class ListUsuario(ListAPIView):
     # authentication_classes = [JWTAuthentication]
     # permission_classes = [IsAdminUser]
+
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -51,8 +52,8 @@ class RetrieveUpdateDestroyUsuario(RetrieveUpdateDestroyAPIView):
         return Response(serializer.data)
     
 class ListFollowUsuario(ListAPIView):
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [IsAdminUser]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAdminUser]
 
     queryset = Follower.objects.all()
     serializer_class = FollowerSerializer
@@ -83,7 +84,7 @@ class FollowUsuario(CreateAPIView):
                 
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
-class DeleteFollowUsuario(DestroyAPIView):
+class DeleteFollowUsuario(RetrieveDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsFollowOwner]
 
@@ -97,7 +98,7 @@ class ListFriendUsuario(ListAPIView):
     # permission_classes = [IsAdminUser]
 
     queryset = Friend.objects.all()
-    serializer_class = FriendSerializer
+    serializer_class = FriendAnswerSerializer
 
 class FriendUsuario(CreateAPIView):
     authentication_classes = [JWTAuthentication]
@@ -124,19 +125,17 @@ class FriendUsuario(CreateAPIView):
     
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
     
-
-
-class UpdateFriendUsuario(UpdateAPIView):
+class UpdateFriendUsuario(RetrieveUpdateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [FriendAnswer]
 
     queryset = Friend.objects.all()
-    serializer_class = FriendSerializer 
+    serializer_class = FriendAnswerSerializer
 
     lookup_url_kwarg = "pk"
 
 
-class DeleteFriendUsuario(DestroyAPIView):
+class DeleteFriendUsuario(RetrieveDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsFriendOwner]
 

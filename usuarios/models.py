@@ -18,7 +18,7 @@ class User(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
 
     
-    
+
     followers = models.ManyToManyField(
         "usuarios.User", through="usuarios.Follower", related_name="seguidores"
     )
@@ -26,14 +26,13 @@ class User(AbstractUser):
     friend_solicitations = models.ManyToManyField(
         "usuarios.User", through="usuarios.Friend", related_name="solicitacao_amizade"
     )
-
-    # @property
-    # def friends(self):
-    #     return User.objects.filter(friend__friend=self, friend__accepted=True)
     
     @property
     def friends(self):
-        return User.objects.filter(friend__friend=self, friend__situation="Aceito")
+        return User.objects.filter(friend__friend=self, friend__situation=FriendSituation.accepted)
+    @property
+    def accepted_friends(self):
+        return self.friend_set.filter(situation=FriendSituation.accepted)
 
 class Follower(models.Model):
     user = models.ForeignKey(
@@ -52,9 +51,5 @@ class Friend(models.Model):
     friend = models.ForeignKey(
         "usuarios.User", on_delete=models.CASCADE, related_name="friend"
     )
-
-    # pendding = models.BooleanField(default=True)
-    # accepted = models.BooleanField(default=False)
-    # solicited = models.BooleanField(default=True) 
 
     situation = models.CharField(max_length=20, choices=FriendSituation.choices, default=FriendSituation.pendding)
