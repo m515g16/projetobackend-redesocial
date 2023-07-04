@@ -126,7 +126,17 @@ class FriendUsuario(CreateAPIView):
     
 
 
-class UpdateDeleteFriendUsuario(RetrieveUpdateDestroyAPIView):
+class UpdateFriendUsuario(UpdateAPIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [FriendAnswer]
+
+    queryset = Friend.objects.all()
+    serializer_class = FriendSerializer 
+
+    lookup_url_kwarg = "pk"
+
+
+class DeleteFriendUsuario(DestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsFriendOwner]
 
