@@ -1,12 +1,31 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
+from usuarios.models import Follower, Friend
+from publicacoes.models import Publication
 
 
 class CommentPermission(BasePermission):
     def has_permission(self, request, view):
-        if request.method in SAFE_METHODS:
+        user_id = request.user.id
+        publication = request.data.get("publication_id")
+        publication = Publication.objects.filter(pk=publication).first()
+
+        if publication.public:
             return True
 
-        return request.user.is_authenticated
+        publication_user_id = publication.user.id
+        follower = Follower.objects.filter(
+            follower_id=user_id, user_id=publication_user_id)
+
+        if follower:
+            return True
+
+        friend = Friend.objects.filter(
+            friend_id=user_id, user_id=publication_user_id)
+
+        if friend:
+            return True
+
+        return False
 
 
 class CommentUpdateDestroyPermission(BasePermission):
