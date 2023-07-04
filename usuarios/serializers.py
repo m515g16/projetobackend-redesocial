@@ -1,8 +1,15 @@
 from rest_framework import serializers
 from .models import User, Follower, Friend
 
+class FriendAnswerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Friend
+        fields = ["id", "friend", "user", "user_id", "situation"]
+        read_only_fields = ["friend", "user"]
 
 class UserSerializer(serializers.ModelSerializer):
+    friends = FriendAnswerSerializer(many=True, source='friend_set', read_only=True)
 
     def create(self, validated_data: dict) -> User:
         return User.objects.create_user(**validated_data)
@@ -48,14 +55,20 @@ class FriendSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Friend
-        fields = ["id", "friend", "user_id", "user",
-                  "pendding", "accepted", "solicited"]
-        read_only_fields = ["friend", "user",
-                            "pendding", "accepted", "solicited"]
+        fields = ["id", "friend", "user", "user_id", "situation"]
+        read_only_fields = ["friend", "user", "situation"]
         extra_kwargs = {
             'user_id': {'write_only': True}
         }
 
+
+class FriendAnswerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Friend
+        fields = ["id", "friend", "user", "user_id", "situation"]
+        read_only_fields = ["friend", "user"]
+     
 
 class UserPublicSerializer(UserSerializer):
     class Meta:
