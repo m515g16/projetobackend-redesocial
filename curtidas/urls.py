@@ -1,6 +1,6 @@
 from django.urls import path
-from . import views
+from .views import LikeView
 
 urlpatterns = [
-    # path("albums/", views.ListCreateAlbums.as_view()),
+    path("", LikeView.as_view()),
 ]
