@@ -6,6 +6,9 @@ from .serializers import CommentSerializer
 
 class CommentPermission(BasePermission):
     def has_permission(self, request, view):
+        if not request.user.is_authenticated:
+            return False
+
         user_id = request.user.id
         serializer = CommentSerializer(data=request.data)
 
