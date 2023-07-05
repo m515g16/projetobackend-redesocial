@@ -77,8 +77,10 @@ class FollowUsuario(CreateAPIView):
             user = User.objects.get(pk=user_id)
 
             if Follower.objects.filter(user=user, follower=follower).exists():
-                print("caiu")
                 return Response({'error': 'Usuária já segue essa pessoa'}, status.HTTP_400_BAD_REQUEST)
+            
+            if user_id == self.request.user.id:
+                return Response({'error': 'Não pode seguir a si mesmo'}, status.HTTP_400_BAD_REQUEST)
             
             serializer.save(follower=follower, user=user)
                 
@@ -119,7 +121,10 @@ class FriendUsuario(CreateAPIView):
         user = User.objects.get(pk=user_id)
         
         if Friend.objects.filter(user=user, friend=friend).exists():
-             return Response ({'error': 'Amizade já solicitada'}, status.HTTP_400_BAD_REQUEST)   
+             return Response ({'error': 'Amizade já solicitada'}, status.HTTP_400_BAD_REQUEST)
+
+        if user_id == self.request.user.id:
+                return Response({'error': 'Não pode se convidar para uma amizade'}, status.HTTP_400_BAD_REQUEST)   
         
         serializer.save(friend=friend, user=user)
     

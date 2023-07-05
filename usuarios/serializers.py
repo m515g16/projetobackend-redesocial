@@ -9,7 +9,8 @@ class FriendAnswerSerializer(serializers.ModelSerializer):
         read_only_fields = ["friend", "user"]
 
 class UserSerializer(serializers.ModelSerializer):
-    friends = FriendAnswerSerializer(many=True, source='friend_set', read_only=True)
+    # friends = FriendAnswerSerializer(many=True, source='friend_set', read_only=True)
+    # accepted_friends = AcceptedFriendsManager()
 
     def create(self, validated_data: dict) -> User:
         return User.objects.create_user(**validated_data)

@@ -6,6 +6,10 @@ class FriendSituation(models.TextChoices):
     accepted = "Aceito"
     denied = "Negado"
 
+# class AcceptedFriendsManager(models.Manager):
+#     def get_queryset(self):
+#         return super().get_queryset().filter(situation=FriendSituation.accepted)
+
 class User(AbstractUser):
     class Meta:
         ordering = ["name"]
@@ -29,10 +33,12 @@ class User(AbstractUser):
     
     @property
     def friends(self):
-        return User.objects.filter(friend__friend=self, friend__situation=FriendSituation.accepted)
-    @property
-    def accepted_friends(self):
-        return self.friend_set.filter(situation=FriendSituation.accepted)
+        return User.objects.filter(friend__user=self, friend__situation=FriendSituation.accepted)
+    # @property
+    # def accepted_friends(self):
+    #     return self.friend_set.filter(situation=FriendSituation.accepted)
+
+    # accepted_friends = AcceptedFriendsManager()
 
 class Follower(models.Model):
     user = models.ForeignKey(
