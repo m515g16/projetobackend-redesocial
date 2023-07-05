@@ -52,7 +52,7 @@ class PublicationUserView(ListAPIView):
 class PublicationTimeLineView(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer_class = PublicationUserSerializer
+    serializer_class = PublicationSerializer
     pagination_class = PublicationUserPagination
 
     def get(self, request, *args, **kwargs):
