@@ -2,9 +2,9 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from usuarios.models import Follower
+from usuarios.models import Followers
 from .models import Publication
-from .serializers import PublicationSerializer, PublicationUserSerializer
+from .serializers import PublicationSerializer, PublicationUserSerializer, PublicationTimeLineSerializer
 from .permission import PublicationPermission, PublicationUserPermission
 from .pagination import PublicationUserPagination
 
@@ -52,12 +52,12 @@ class PublicationUserView(ListAPIView):
 class PublicationTimeLineView(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    serializer_class = PublicationSerializer
+    serializer_class = PublicationTimeLineSerializer
     pagination_class = PublicationUserPagination
 
     def get(self, request, *args, **kwargs):
         user = request.user
-        following = Follower.objects.filter(follower=user)
+        following = Followers.objects.filter(follower=user)
         following_id = []
 
         if not following:
