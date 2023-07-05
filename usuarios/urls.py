@@ -9,10 +9,9 @@ urlpatterns = [
     path("usuarios/list-follow/", views.ListFollowUsuario.as_view()),
     path("usuarios/create-follow/", views.FollowUsuario.as_view()),
     path("usuarios/delete-follow/<int:pk>/", views.DeleteFollowUsuario.as_view()),
-    path("usuarios/list-friend/", views.ListFriendUsuario.as_view()),
-    path("usuarios/solicite-friend/", views.FriendUsuario.as_view()),
-    path("usuarios/upd-friend/<int:pk>/", views.UpdateFriendUsuario.as_view()),
-    path("usuarios/del-friend/<int:pk>/", views.DeleteFriendUsuario.as_view()),
+    path("usuarios/friend/", views.FriendUsuario.as_view()),
+    path("usuarios/friend/<int:pk>/", views.UpdateFriendUsuario.as_view()),
+    path("usuarios/friend/<int:pk>/", views.DeleteFriendUsuario.as_view()),
     path("usuarios/login/", jwt_views.TokenObtainPairView.as_view()),
     path("usuarios/refresh/", jwt_views.TokenRefreshView.as_view()),
 ]

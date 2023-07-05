@@ -1,6 +1,6 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from rest_framework.response import Response
-from usuarios.models import Follower, Friend
+from usuarios.models import Followers, FriendSolicitations
 
 
 class PublicationPermission(BasePermission):
@@ -21,13 +21,13 @@ class PublicationUserPermission(BasePermission):
 
         publication_user_id = obj.user.id
         user_id = request.user.id
-        follower = Follower.objects.filter(
+        follower = Followers.objects.filter(
             follower_id=user_id, user_id=publication_user_id)
 
         if follower:
             return True
 
-        friend = Friend.objects.filter(
+        friend = FriendSolicitations.objects.filter(
             friend_id=user_id, user_id=publication_user_id)
 
         if friend:

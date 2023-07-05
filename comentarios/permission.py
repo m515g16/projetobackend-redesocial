@@ -1,5 +1,5 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
-from usuarios.models import Follower, Friend
+from usuarios.models import Followers, FriendSolicitations
 from publicacoes.models import Publication
 from .serializers import CommentSerializer
 
@@ -21,13 +21,13 @@ class CommentPermission(BasePermission):
             return True
 
         publication_user_id = publication.user.id
-        follower = Follower.objects.filter(
+        follower = Followers.objects.filter(
             follower_id=user_id, user_id=publication_user_id)
 
         if follower:
             return True
 
-        friend = Friend.objects.filter(
+        friend = FriendSolicitations.objects.filter(
             friend_id=user_id, user_id=publication_user_id)
 
         if friend:

@@ -1,14 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-class FriendSituation(models.TextChoices):
-    pendding = "Pendente"
-    accepted = "Aceito"
-    denied = "Negado"
-
-# class AcceptedFriendsManager(models.Manager):
-#     def get_queryset(self):
-#         return super().get_queryset().filter(situation=FriendSituation.accepted)
 
 class User(AbstractUser):
     class Meta:
@@ -24,23 +16,20 @@ class User(AbstractUser):
     
 
     followers = models.ManyToManyField(
-        "usuarios.User", through="usuarios.Follower", related_name="seguidores"
+        "usuarios.User", through="usuarios.Followers", related_name="seguidores"
     )
 
     friend_solicitations = models.ManyToManyField(
-        "usuarios.User", through="usuarios.Friend", related_name="solicitacao_amizade"
+        'self', symmetrical=False, through="usuarios.FriendSolicitations", related_name="solicitacao_amizade"
     )
+
+    friends = models.ManyToManyField('self', symmetrical=True, through="usuarios.Friends", related_name="amizades")
+
     
-    @property
-    def friends(self):
-        return User.objects.filter(friend__user=self, friend__situation=FriendSituation.accepted)
-    # @property
-    # def accepted_friends(self):
-    #     return self.friend_set.filter(situation=FriendSituation.accepted)
 
-    # accepted_friends = AcceptedFriendsManager()
+    
 
-class Follower(models.Model):
+class Followers(models.Model):
     user = models.ForeignKey(
         "usuarios.User", on_delete=models.CASCADE, related_name="followed_user"
     )
@@ -49,13 +38,23 @@ class Follower(models.Model):
         "usuarios.User", on_delete=models.CASCADE, related_name="follower_user"
     )
 
-class Friend(models.Model):
+class FriendSolicitations(models.Model):
     user = models.ForeignKey(
-        "usuarios.User", on_delete=models.CASCADE, related_name="user"
+        "usuarios.User", on_delete=models.CASCADE, related_name="friend_solicited"
     )
 
     friend = models.ForeignKey(
-        "usuarios.User", on_delete=models.CASCADE, related_name="friend"
+        "usuarios.User", on_delete=models.CASCADE, related_name="friend_request"
     )
 
-    situation = models.CharField(max_length=20, choices=FriendSituation.choices, default=FriendSituation.pendding)
+    accepted = models.BooleanField(default=False)
+
+
+class Friends(models.Model):
+    from_user = models.ForeignKey(
+        "usuarios.User", on_delete=models.CASCADE, related_name="from_user"
+    )
+
+    to_user = models.ForeignKey(
+        "usuarios.User", on_delete=models.CASCADE, related_name="to_user"
+    )
