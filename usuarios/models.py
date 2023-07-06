@@ -13,8 +13,6 @@ class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    
-
     followers = models.ManyToManyField(
         "usuarios.User", through="usuarios.Followers", related_name="seguidores"
     )
@@ -23,11 +21,6 @@ class User(AbstractUser):
         'self', symmetrical=False, through="usuarios.FriendSolicitations", related_name="solicitacao_amizade"
     )
 
-    friends = models.ManyToManyField('self', symmetrical=True, through="usuarios.Friends", related_name="amizades")
-
-    
-
-    
 
 class Followers(models.Model):
     user = models.ForeignKey(
@@ -38,6 +31,7 @@ class Followers(models.Model):
         "usuarios.User", on_delete=models.CASCADE, related_name="follower_user"
     )
 
+
 class FriendSolicitations(models.Model):
     user = models.ForeignKey(
         "usuarios.User", on_delete=models.CASCADE, related_name="friend_solicited"
@@ -47,14 +41,5 @@ class FriendSolicitations(models.Model):
         "usuarios.User", on_delete=models.CASCADE, related_name="friend_request"
     )
 
+    pedding = models.BooleanField(default=True)
     accepted = models.BooleanField(default=False)
-
-
-class Friends(models.Model):
-    from_user = models.ForeignKey(
-        "usuarios.User", on_delete=models.CASCADE, related_name="from_user"
-    )
-
-    to_user = models.ForeignKey(
-        "usuarios.User", on_delete=models.CASCADE, related_name="to_user"
-    )
