@@ -96,8 +96,15 @@ class DeleteFollowUsuario(RetrieveDestroyAPIView):
     queryset = Followers.objects.all()
     serializer_class = FollowerSerializer 
 
-    lookup_url_kwarg = "pk"         
+      
 
+    def destroy(self, request, *args, **kwargs):
+        follower = request.user
+        instance = Followers.objects.get(user_id=self.kwargs.get("pk"), follower=follower)
+        if not instance:
+            return Response({'detail': 'Você não segue esse pessoa ou ela não existe'}, status.HTTP_400_BAD_REQUEST)     
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class FriendUsuario(ListCreateAPIView):
