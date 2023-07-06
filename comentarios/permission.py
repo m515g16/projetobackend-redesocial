@@ -6,9 +6,6 @@ from .serializers import CommentSerializer
 
 class CommentPermission(BasePermission):
     def has_permission(self, request, view):
-        if not request.user.is_authenticated:
-            return False
-
         user_id = request.user.id
         serializer = CommentSerializer(data=request.data)
 
@@ -20,17 +17,25 @@ class CommentPermission(BasePermission):
         if publication.public:
             return True
 
-        publication_user_id = publication.user.id
+        if not request.user.is_authenticated:
+            return False
+
+        publication_user_id = publication.user_id
         follower = Followers.objects.filter(
             follower_id=user_id, user_id=publication_user_id)
+
+        if publication_user_id == user_id:
+            return True
 
         if follower:
             return True
 
-        friend = FriendSolicitations.objects.filter(
-            friend_id=user_id, user_id=publication_user_id)
+        friend_user = FriendSolicitations.objects.filter(
+            friend_id=user_id, user_id=publication_user_id).first()
+        user_friend = FriendSolicitations.objects.filter(
+            friend_id=publication_user_id, user_id=user_id).first()
 
-        if friend:
+        if friend_user or user_friend:
             return True
 
         return False
