@@ -3,14 +3,14 @@ from .models import User, Followers, FriendSolicitations
 from .serializers import UserSerializer, FollowerSerializer, FriendSerializer, UserFriendSerializer
 from django.shortcuts import get_object_or_404
 from .permissions import IsAccountOwner, IsFollowOwner, FriendPemission, ListUsersPermission
-from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView, ListAPIView,RetrieveDestroyAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView, ListAPIView,RetrieveDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class ListCreateUsuario(ListCreateAPIView):
-    # authentication_classes = [JWTAuthentication]
-    # permission_classes = [ListUsersPermission]
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [ListUsersPermission]
     
     queryset = User.objects.all()
     serializer_class = UserSerializer
