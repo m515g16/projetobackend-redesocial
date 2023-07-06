@@ -102,6 +102,7 @@ class DeleteFollowUsuario(RetrieveDestroyAPIView):
     lookup_url_kwarg = "pk"
 
 
+
 class FriendUsuario(ListCreateAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
