@@ -130,11 +130,15 @@ class FriendUsuario(ListCreateAPIView):
         user = request.user
         user_solicited = serializer.validated_data.get("user_id")
 
+        user = User.objects.filter(pk=user_solicited).first()
+        if not user:
+            return Response({'detail': 'User not found'}, status.HTTP_404_NOT_FOUND)
+
         if FriendSolicitations.objects.filter(user_id=user_solicited, friend=user).exists():
             return Response({'detail': 'You are already friend that person'}, status.HTTP_400_BAD_REQUEST)
 
         if user_solicited == request.user.id:
-            return Response({'detail': 'you cant request friendship yourself'}, status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'You cant request friendship yourself'}, status.HTTP_400_BAD_REQUEST)
 
         return self.create(request, *args, **kwargs)
 
