@@ -8,6 +8,7 @@ urlpatterns = [
     path("usuarios/<int:pk>/",
          views.RetrieveUpdateDestroyUsuario.as_view()),
 
+    path("usuarios/follow/list/", views.ListFollow.as_view()),
     path("usuarios/follow/", views.FollowUsuario.as_view()),
     path("usuarios/follow/<int:pk>/", views.DeleteFollowUsuario.as_view()),
 
