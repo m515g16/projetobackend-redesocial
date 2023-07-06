@@ -16,21 +16,23 @@ class PublicationUserPermission(BasePermission):
         if not request.method in SAFE_METHODS:
             return request.user == obj.user
 
-        if obj.public:
+        if obj.public or request.user == obj.user:
             return True
 
         publication_user_id = obj.user.id
         user_id = request.user.id
         follower = Followers.objects.filter(
-            follower_id=user_id, user_id=publication_user_id)
+            follower_id=user_id, user_id=publication_user_id).first()
 
         if follower:
             return True
 
-        friend = FriendSolicitations.objects.filter(
-            friend_id=user_id, user_id=publication_user_id)
+        friend_user = FriendSolicitations.objects.filter(
+            friend_id=user_id, user_id=publication_user_id).first()
+        user_friend = FriendSolicitations.objects.filter(
+            friend_id=publication_user_id, user_id=user_id).first()
 
-        if friend:
+        if friend_user or user_friend:
             return True
 
         return False

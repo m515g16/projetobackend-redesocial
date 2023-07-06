@@ -3,6 +3,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from publicacoes.models import Publication
 from .serializers import LikeSerializer
 from .models import Like
 
@@ -43,6 +44,16 @@ class LikeCreateView(CreateAPIView):
     permission_classes = [IsAuthenticated]
     queryset = Like
     serializer_class = LikeSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = LikeSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        publication_id = serializer.validated_data.get("publication_id")
+
+        if not Publication.objects.filter(pk=publication_id).exists():
+            return Response({"detail": "Not found publication"}, status=404)
+
+        return self.create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
         user = self.request.user
