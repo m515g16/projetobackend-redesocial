@@ -41,5 +41,5 @@ class FriendSolicitations(models.Model):
         "usuarios.User", on_delete=models.CASCADE, related_name="friend_request"
     )
 
-    pedding = models.BooleanField(default=True)
+    pendding = models.BooleanField(default=True)
     accepted = models.BooleanField(default=False)

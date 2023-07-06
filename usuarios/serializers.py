@@ -2,19 +2,21 @@ from rest_framework import serializers
 from .models import User, Followers, FriendSolicitations
 
 
+
+
 class FriendAnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FriendSolicitations
-        fields = ["user_id", "friend_id"]
+        fields = ["id"]
 
 
 class UserSerializer(serializers.ModelSerializer):
     friends = serializers.SerializerMethodField()
 
     def get_friends(self, user):
-        friends_accepted = FriendSolicitations.objects.filter(user=user)
-        friends_requested = FriendSolicitations.objects.filter(friend=user)
+        friends_accepted = FriendSolicitations.objects.filter(user=user, accepted=True)
+        friends_requested = FriendSolicitations.objects.filter(friend=user, accepted=True)
         friends = [*friends_accepted, *friends_requested]
         serializer = FriendAnswerSerializer(friends, many=True)
 
@@ -43,6 +45,10 @@ class UserSerializer(serializers.ModelSerializer):
             'friends': {'read_only': True}
         }
 
+class UserPublicSerializer(UserSerializer):
+    class Meta:
+        model = User
+        fields = ("id", "perfil", "name", "username")
 
 class FollowerSerializer(serializers.ModelSerializer):
     user_id = serializers.IntegerField(write_only=True)
@@ -65,22 +71,47 @@ class FriendSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FriendSolicitations
-        fields = ["id", "friend", "user", "user_id", "accepted", "pedding"]
+        fields = ["id", "friend", "user", "user_id", "accepted", "pendding"]
         read_only_fields = ["friend", "user"]
         extra_kwargs = {
             'user_id': {'write_only': True}
         }
 
 
-# class FriendAnswerSerializer(serializers.ModelSerializer):
+class FriendUser1Serializer(serializers.ModelSerializer):
+    friend = UserPublicSerializer(read_only=True)
+    
 
-#     class Meta:
-#         model = Friend
-#         fields = ["id", "friend", "user", "user_id", "situation"]
-#         read_only_fields = ["friend", "user"]
+    class Meta:
+        model = FriendSolicitations
+        fields = ["id", "friend"]
+        read_only_fields = ["friend"]
 
+class FriendUser2Serializer(serializers.ModelSerializer):
+    
+    user = UserPublicSerializer(read_only=True)
 
-class UserPublicSerializer(UserSerializer):
+    class Meta:
+        model = FriendSolicitations
+        fields = ["id", "user"]
+        read_only_fields = ["user"]
+
+class UserFriendSerializer(serializers.ModelSerializer):
+    friends = serializers.SerializerMethodField()
+
+    def get_friends(self, user):
+        friends_accepted = FriendSolicitations.objects.filter(user=user, accepted=True)
+        friends_requested = FriendSolicitations.objects.filter(friend=user, accepted=True)
+        serializer_requested = FriendUser2Serializer(friends_requested, many=True)
+        serializer_accepted = FriendUser1Serializer(friends_accepted, many=True)
+        friends = [*serializer_requested.data, *serializer_accepted.data]
+
+        return friends
+
     class Meta:
         model = User
-        fields = ("id", "perfil", "name", "username")
+        fields = ["id", "perfil", "name", "username", "friends"]
+       
+
+
+
