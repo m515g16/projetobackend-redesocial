@@ -11,8 +11,20 @@ class FriendAnswerSerializer(serializers.ModelSerializer):
         fields = ["id"]
 
 
+class PenddingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FriendSolicitations
+        fields = ["friend","pendding"]
+
 class UserSerializer(serializers.ModelSerializer):
     friends = serializers.SerializerMethodField()
+    pendding_requests = serializers.SerializerMethodField()
+
+    def get_pendding_requests(self, user):
+        penddings = FriendSolicitations.objects.filter(user=user, pendding=True)
+        serializer = PenddingSerializer(penddings, many=True)
+
+        return serializer.data
 
     def get_friends(self, user):
         friends_accepted = FriendSolicitations.objects.filter(user=user, accepted=True)
@@ -39,7 +51,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "perfil", "name", "username", "email", "password", "birthdate",
-                  "created_at", "updated_at", "followers", "friends"]
+                  "created_at", "updated_at", "followers", "friends", "pendding_requests"]
         extra_kwargs = {
             'password': {'write_only': True},
             'friends': {'read_only': True}
