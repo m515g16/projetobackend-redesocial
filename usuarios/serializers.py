@@ -111,6 +111,29 @@ class UserFriendSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id", "perfil", "name", "username", "friends"]
+
+class FollowerUserSerializer(serializers.ModelSerializer):
+    follower = UserPublicSerializer(read_only=True)
+    
+
+    class Meta:
+        model = FriendSolicitations
+        fields = ["id", "follower"]
+        read_only_fields = ["follower"]
+
+class UserFollowersSerializer(serializers.ModelSerializer):
+    followers = serializers.SerializerMethodField()
+
+    def get_followers(self, user):
+        followers = Followers.objects.filter(user=user)
+        
+        followers = FollowerUserSerializer(followers, many=True)
+        
+        return followers.data
+
+    class Meta:
+        model = User
+        fields = ["id", "perfil", "name", "username", "followers"]
        
 
 
