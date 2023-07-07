@@ -1,6 +1,6 @@
 from rest_framework.views import Request, Response, status
 from .models import User, Followers, FriendSolicitations
-from .serializers import UserSerializer, FollowerSerializer, FriendSerializer, UserFriendSerializer
+from .serializers import UserSerializer, FollowerSerializer, FriendSerializer, UserFriendSerializer, UserFollowersSerializer
 from django.shortcuts import get_object_or_404
 from .permissions import IsAccountOwner, IsFollowOwner, FriendPemission, ListUsersPermission
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView, ListAPIView,RetrieveDestroyAPIView
@@ -9,8 +9,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class ListCreateUsuario(ListCreateAPIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [ListUsersPermission]
+    # authentication_classes = [JWTAuthentication]
+    # permission_classes = [ListUsersPermission]
     
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -87,12 +87,18 @@ class FollowUsuario(CreateAPIView):
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
 
-class DeleteFollowUsuario(RetrieveDestroyAPIView):
+class RetrieveDeleteFollowUsuario(RetrieveDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsFollowOwner]
 
     queryset = Followers.objects.all()
     serializer_class = FollowerSerializer
+
+    def get(self, request, *args, **kwargs):
+        self.queryset = User
+        self.serializer_class = UserFollowersSerializer
+
+        return self.retrieve(request, *args, **kwargs)
 
     def destroy(self, request, *args, **kwargs):
         follower = request.user
