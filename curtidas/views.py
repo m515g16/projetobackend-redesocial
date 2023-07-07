@@ -4,7 +4,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from publicacoes.models import Publication
-from .serializers import LikeSerializer
+from .serializers import LikeSerializer, LikeUserSerializer
+from .permissions import LikePermission
 from .models import Like
 
 
@@ -34,7 +35,7 @@ class LikeRetrieveUserView(APIView):
         if not like_user:
             return Response({"detail": "User has no like the publication"}, status=404)
 
-        serializer = LikeSerializer(like_user)
+        serializer = LikeUserSerializer(like_user)
 
         return Response(data=serializer.data, status=200)
 
@@ -47,11 +48,17 @@ class LikeCreateView(CreateAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = LikeSerializer(data=request.data)
+
         serializer.is_valid(raise_exception=True)
+
+        user = request.user
         publication_id = serializer.validated_data.get("publication_id")
 
         if not Publication.objects.filter(pk=publication_id).exists():
-            return Response({"detail": "Not found publication"}, status=404)
+            return Response({"detail": "Not found publication."}, status=404)
+
+        if Like.objects.filter(user=user, publication_id=publication_id).exists():
+            return Response({"detail": "User already liked the post."}, status=400)
 
         return self.create(request, *args, **kwargs)
 
@@ -64,6 +71,6 @@ class LikeCreateView(CreateAPIView):
 
 class LikeDestroyView(DestroyAPIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [LikePermission]
     queryset = Like
     serializer_class = LikeSerializer

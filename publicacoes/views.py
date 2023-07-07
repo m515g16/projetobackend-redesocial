@@ -6,7 +6,7 @@ from usuarios.models import Followers
 from .models import Publication
 from .serializers import PublicationSerializer, PublicationUserSerializer, PublicationTimeLineSerializer
 from .permission import PublicationPermission, PublicationUserPermission
-from .pagination import PublicationUserPagination
+from .pagination import PaginationCustomer
 
 
 class PublicationView(ListCreateAPIView):
@@ -14,7 +14,7 @@ class PublicationView(ListCreateAPIView):
     permission_classes = [PublicationPermission]
     queryset = Publication.objects.filter(public=True).order_by("created_at")
     serializer_class = PublicationSerializer
-    pagination_class = PublicationUserPagination
+    pagination_class = PaginationCustomer
 
     def perform_create(self, serializer):
         user = self.request.user
@@ -34,7 +34,7 @@ class PublicationUserView(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [PublicationUserPermission]
     serializer_class = PublicationUserSerializer
-    pagination_class = PublicationUserPagination
+    pagination_class = PaginationCustomer
 
     def get(self, request, *args, **kwargs):
         user_id = kwargs.get("user_id")
@@ -53,7 +53,7 @@ class PublicationTimeLineView(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     serializer_class = PublicationTimeLineSerializer
-    pagination_class = PublicationUserPagination
+    pagination_class = PaginationCustomer
 
     def get(self, request, *args, **kwargs):
         user = request.user
