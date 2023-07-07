@@ -17,3 +17,11 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ("id", "text", "created_at", "user", "publication_id")
+
+
+class CommentUserSerializer(serializers.ModelSerializer):
+    user = UserPublicSerializer(read_only=True)
+
+    class Meta:
+        model = Comment
+        fields = ("id", "text", "created_at", "user")

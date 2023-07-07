@@ -2,10 +2,10 @@ from rest_framework.generics import CreateAPIView, ListAPIView, UpdateAPIView, D
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from publicacoes.pagination import PaginationCustomer
+from .pagination import PaginationCustomer
 from .permission import CommentPermission, CommentUpdateDestroyPermission
 from .models import Comment
-from .serializers import CommentSerializer
+from .serializers import CommentSerializer, CommentUserSerializer
 
 
 class CommentView(CreateAPIView):
@@ -25,7 +25,7 @@ class CommentPublicationView(ListAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
     pagination_class = PaginationCustomer
-    serializer_class = CommentSerializer
+    serializer_class = CommentUserSerializer
 
     def get(self, request, *args, **kwargs):
         publication_id = kwargs.get("publication_id")
