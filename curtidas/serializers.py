@@ -17,3 +17,17 @@ class LikeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Like
         fields = ("id", "user", "publication_id")
+
+
+class PublicationLikeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Publication
+        fields = ("id", "image", "text", "created_at")
+
+
+class LikeUserSerializer(serializers.ModelSerializer):
+    publication = PublicationLikeSerializer(read_only=True)
+
+    class Meta:
+        model = Like
+        fields = ("id", "publication")
