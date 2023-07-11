@@ -8,7 +8,7 @@ class FriendAnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = FriendSolicitations
-        fields = ["id"]
+        fields = ["id","friend","user"]
 
 
 class PenddingSerializer(serializers.ModelSerializer):
