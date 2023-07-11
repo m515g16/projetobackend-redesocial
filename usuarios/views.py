@@ -9,8 +9,6 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
 class ListCreateUsuario(ListCreateAPIView):
-    authentication_classes = [JWTAuthentication]
-    permission_classes = [ListUsersPermission]
     
     queryset = User.objects.all()
     serializer_class = UserSerializer
