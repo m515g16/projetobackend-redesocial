@@ -6,6 +6,9 @@ from .permissions import IsAccountOwner, IsFollowOwner, FriendPemission, ListUse
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, ListCreateAPIView, RetrieveDestroyAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.pagination import PageNumberPagination
+
+
 
 
 class ListCreateUsuario(ListCreateAPIView):
@@ -13,7 +16,11 @@ class ListCreateUsuario(ListCreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-
+    def get(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+    
 class RetrieveUpdateDestroyUsuario(RetrieveUpdateDestroyAPIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAccountOwner]

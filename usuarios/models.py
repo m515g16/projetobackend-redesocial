@@ -9,7 +9,7 @@ class User(AbstractUser):
     email = models.CharField(max_length=120, unique=True)
     name = models.CharField(max_length=60)
     birthdate = models.DateField(null=True)
-    perfil = models.CharField(max_length=180, null=True)
+    perfil = models.CharField(max_length=1000, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
