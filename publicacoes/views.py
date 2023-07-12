@@ -71,8 +71,8 @@ class PublicationTimeLineView(ListAPIView):
     def get(self, request, *args, **kwargs):
         user = request.user
         following = Followers.objects.filter(follower=user)
-        friend_user = FriendSolicitations.objects.filter(user=user)
-        user_friend = FriendSolicitations.objects.filter(friend=user)
+        friend_user = FriendSolicitations.objects.filter(user=user, accepted=True)
+        user_friend = FriendSolicitations.objects.filter(friend=user, accepted=True)
         friends = [*friend_user, *user_friend]
         following_friends = []
 
